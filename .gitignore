@@ -3,3 +3,4 @@ instance/
 test_flask/__pycache__/
 test_flask/main/__pycache__/
 test_flask/users/__pycache__/
+test_flask/posts/__pycache__/

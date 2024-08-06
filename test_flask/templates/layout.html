@@ -75,7 +75,11 @@
             <div class="navbar-nav">
                 {% if current_user.is_authenticated %}
                     <a class="nav-item nav-link navigation-links" href="{{url_for('users.account') }}"><i class="fa fa-user"></i>Профиль</a>
+                    <a class="nav-item nav-link navigation-links" href="{{ url_for('posts.new_post') }}"><i class="fa fa-plus"></i>Новый пост</a>
+
+                    <a class="nav-item nav-link navigation-links" href="{{ url_for('posts.allpost') }}"><i class="fa fa-th"></i>Посты</a>
                     <a class="nav-item nav-link navigation-links" href="{{ url_for('users.logout') }}"><i class="fa fa-sign-out"></i>Выйти</a>
+                    
 
 
                 {% else %}

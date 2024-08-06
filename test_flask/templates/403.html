@@ -1,0 +1,7 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <h1>403 - Запрещено</h1>
+  <p>У вас нет прав для доступа к этой странице.</p>
+  <a href="{{ url_for('main.home') }}">Вернуться на главную</a>
+{% endblock %}

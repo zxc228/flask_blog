@@ -29,10 +29,13 @@ def create_app():
 
     from test_flask.main.routes import main
     from test_flask.users.routes import users
+    from test_flask.posts.routes import posts
+
     
     print("Registering blueprints...")
     app.register_blueprint(main)
     app.register_blueprint(users)
+    app.register_blueprint(posts)
     
     print("Application created successfully!")
     
