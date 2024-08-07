@@ -3,12 +3,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from .config import Config
 from flask_bcrypt import Bcrypt
-
+from flask_mail import Mail
 
 
 db = SQLAlchemy()
 login_manager = LoginManager()
 bcrypt = Bcrypt()
+mail = Mail()
 
 def create_app():
     print(__name__)
@@ -26,6 +27,7 @@ def create_app():
     bcrypt.init_app(app)
 
    
+    mail.init_app(app)
 
     from test_flask.main.routes import main
     from test_flask.users.routes import users

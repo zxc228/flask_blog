@@ -5,7 +5,7 @@ from test_flask.models import User, Post
 from test_flask.users.forms import RegistrationForm, LoginForm, \
     UpdateAccountForm, \
     RequestResetForm, ResetPasswordForm
-from test_flask.users.utils import save_picture
+from test_flask.users.utils import save_picture, send_reset_email
 
 users = Blueprint('users', __name__)
 
@@ -88,3 +88,33 @@ def user_posts(username):
     user = User.query.filter_by(username=username).first_or_404()
     posts = Post.query.filter_by(author=user).order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
     return render_template('user_posts.html', posts=posts, user = user)
+
+
+@users.route("/reset_password", methods=['GET', 'POST'])
+def reset_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('posts.allpost'))
+    form = RequestResetForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        send_reset_email(user)
+        flash("На вашу почту было отправлено письмо с инструкциями по сброс паролей", 'info')
+        return redirect(url_for('users.login'))
+    return render_template('reset_request.html', title='Сброс пароля', form=form)
+
+@users.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_token(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('posts.allpost'))
+    user = User.verify_reset_token(token)
+    if user is None:
+        flash('Это недействительный или просроченный токен', 'warning')
+        return redirect(url_for('users.reset_request'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user.password = hashed_password
+        db.session.commit()
+        flash('Ваш пароль был обновлен!. Теперь вы можете авторизоваться.', 'success')
+        return redirect(url_for('users.login'))
+    return render_template('reset_token.html', form=form)
