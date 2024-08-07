@@ -1,7 +1,10 @@
 .venv/
 instance/
-test_flask/__pycache__/
-test_flask/main/__pycache__/
-test_flask/users/__pycache__/
-test_flask/posts/__pycache__/
-test_flask/config.py
+flask_blog/__pycache__/
+flask_blog/main/__pycache__/
+flask_blog/users/__pycache__/
+flask_blog/posts/__pycache__/
+flask_blog/errors/__pycache__/
+flask_blog/config.py
+flask_blog/.env
+migrations/

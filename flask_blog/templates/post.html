@@ -1,0 +1,139 @@
+{% extends "layout.html" %}
+
+{% block head %}
+  <style>
+    .container{
+      margin-bottom: 0.8rem;
+    }
+
+    .card{
+      border-radius: 25px;
+      background-color: white; 
+      box-shadow: 10px 15px 10px #4a4e69;
+      width: 92%;
+    }
+    
+    .card-title{
+      margin-bottom: 0 !important;
+      font-family: 'Bebas Neue', cursive;
+    }
+
+    a{
+      color: #003049 !important;
+      text-decoration: none;
+    }
+
+    small{
+      color: lightslategray;
+    }
+
+    p{
+      color: rgb(43, 37, 37);
+    }
+
+    .like-dislike-btns {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    .like-dislike-btns button {
+      border: none;
+      background-color: transparent;
+      font-size: 24px;
+      margin-right: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+
+    .like-dislike-btns button img {
+      margin-right: 5px;
+      width: 32px;
+    }
+
+    .like-dislike-btns button:hover {
+      color: #007bff; /* Цвет при наведении */
+    }
+
+    .like-dislike-btns .like-count,
+    .like-dislike-btns .dislike-count {
+      font-size: 18px;
+      margin-left: 5px;
+    }
+  </style>
+{% endblock head %}
+
+{% block content %}
+<div class="container" style="display: flex;">
+  <article class="media" style="display: flex; flex-direction: column;"> 
+    <img class="rounded-circle article-img" style="margin-right: 5px;" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+    <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}" style="margin: 0 auto">{{ post.author.username }}</a>
+  </article>
+  
+  <div class="card" style="margin-bottom: 20px;">
+    <div class="card-body">
+      <h4 class="card-title">{{ post.title }}</h4>
+      <small>Опубликовано {{ post.date_posted.strftime('%A, %d %B %Y %I:%M %p') }}</small>
+      <br>
+      <br>
+
+      {% if post.image_file %}
+        <div class="form-group">
+          <img style="margin-right: 5px;" src="{{ url_for('static', filename='profile_pics/' + post.image_file) }}">
+        </div>
+      {% endif %}
+
+      <p class="card-text">{{ post.content }}</p>
+
+      <!-- Кнопки лайка и дизлайка -->
+      <div class="like-dislike-btns">
+        <form action="{{ url_for('posts.post', post_id=post.id) }}" method="post" style="display:inline-block;">
+          {{ like_form.hidden_tag() }}
+          
+          <!-- Кнопка лайка -->
+          <button name="like" type="submit">
+            <img src="{{ url_for('static', filename='images/like.svg') }}" alt="Like">
+            <span class="like-count">{{ likes_count }}</span>
+          </button>
+
+          <!-- Кнопка дизлайка -->
+          <button name="dislike" type="submit">
+            <img src="{{ url_for('static', filename='images/dislike.svg') }}" alt="Dislike">
+            <span class="dislike-count">{{ dislikes_count }}</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card-footer" style="font-size: 20px;">
+      {% if post.author == current_user %}
+        <div class="card-footer" style="font-size: 20px;">
+          <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{url_for('posts.update_post', post_id=post.id) }}">Обновить</a>
+          <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Удалить</button>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+  
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Удалить пост?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+        <form action="{{ url_for('posts.delete_post', post_id=post.id) }}" method="POST">
+          <input class="btn btn-danger" type="submit" value="Удалить">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
