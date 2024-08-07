@@ -8,3 +8,4 @@ flask_blog/errors/__pycache__/
 flask_blog/config.py
 flask_blog/.env
 migrations/
+__pycache__
