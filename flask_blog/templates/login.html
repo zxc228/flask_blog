@@ -4,7 +4,7 @@
         <form method="POST" action="">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Авторизация</legend>
+                <legend class="border-bottom mb-4">Login</legend>
                 <div class="form-group">
                     {{ form.email.label(class="form-control-label") }}
                     {% if form.email.errors %}
@@ -39,20 +39,13 @@
             <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}
                 <small class="text-muted ml-2">
-                    <a href="{{ url_for('users.reset_request') }}">Забыли пароль?</a>
+                    <a href="{{ url_for('users.reset_request') }}">Forgot password?</a>
                 </small>
-
-
-
-
             </div>
             <small style="font-size: 15px; font-weight: 500;">
-                Нужен аккаунт? <a class="ml-2" href="{{ url_for('users.register') }}">Зарегистрируйтесь</a>
+                Need an account? <a class="ml-2" href="{{ url_for('users.register') }}">Register</a>
             </small>
-            <p>Не получили письмо с подтверждением? <a href="{{ url_for('users.resend_confirmation') }}">Повторно отправить подтверждение</a></p>
+            <p>Didn't receive the confirmation email? <a href="{{ url_for('users.resend_confirmation') }}">Resend confirmation</a></p>
         </form>
     </div>
-
-    
-
 {% endblock content %}

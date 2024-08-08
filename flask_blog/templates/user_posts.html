@@ -1,12 +1,12 @@
 {% extends "layout.html" %}
 
 {% block content %}
-    <h1 class="mb-3">Посты опубликованы пользователем {{ user.username }} ({{ pagination.total }})</h1>
+    <h1 class="mb-3">Posts published by {{ user.username }} ({{ pagination.total }})</h1>
     {% for post_with_likes in posts %}
     {% set post = post_with_likes.post %}
     <div class="container" style="display: flex;">
       <article class="media" style="display: flex; flex-direction: column;">
-        <!-- Отображение аватара автора поста -->
+        <!-- Display post author's avatar -->
         <img class="rounded-circle article-img" style="margin-right: 5px;" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
         <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}" style="margin: 0 auto">{{ post.author.username }}</a>
       </article>
@@ -15,29 +15,29 @@
         <div class="card-body">
           <h4 class="card-title"><a class="title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h4>
 
-          <small>Опубликовано <span class="post-time" data-utc-time="{{ post_with_likes.date_posted_utc }}"></span></small>
+          <small>Published on <span class="post-time" data-utc-time="{{ post_with_likes.date_posted_utc }}"></span></small>
           <br>
           <br>
           <p class="card-text">{{ post.content }}</p>
 
-          <!-- Отображение изображения поста -->
+          <!-- Display post image -->
           {% if post.image_file and post.image_file != 'default.png' %}
-            <img src="{{ url_for('static', filename='post_pics/' + post.image_file) }}" alt="Изображение поста" class="post-image">
+            <img src="{{ url_for('static', filename='post_pics/' + post.image_file) }}" alt="Post image" class="post-image">
           {% endif %}
 
-          <!-- Кнопки лайка и дизлайка -->
+          <!-- Like and dislike buttons -->
           <div class="like-dislike-btns">
             <form method="post" action="{{ url_for('users.user_posts', username=user.username, page=pagination.page) }}" style="display:inline-block;">
               {{ like_form.hidden_tag() }}
               <input type="hidden" name="post_id" value="{{ post.id }}">
               
-              <!-- Кнопка лайка -->
+              <!-- Like button -->
               <button name="like" type="submit">
                 <img src="{{ url_for('static', filename='images/like.svg') }}" alt="Like">
                 <span class="like-count">{{ post_with_likes.likes_count }}</span>
               </button>
 
-              <!-- Кнопка дизлайка -->
+              <!-- Dislike button -->
               <button name="dislike" type="submit">
                 <img src="{{ url_for('static', filename='images/dislike.svg') }}" alt="Dislike">
                 <span class="dislike-count">{{ post_with_likes.dislikes_count }}</span>
@@ -49,7 +49,7 @@
     </div>
     {% endfor %}
 
-    <!-- Пагинация -->
+    <!-- Pagination -->
     {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
       {% if page_num %}
         {% if pagination.page == page_num %}
@@ -70,8 +70,8 @@
             const utcTime = element.getAttribute('data-utc-time');
             const localTime = new Date(utcTime);
             
-            // Форматируем время в нужном виде
-            element.textContent = localTime.toLocaleString('ru-RU', {
+            // Format the time in the desired format
+            element.textContent = localTime.toLocaleString('en-US', {
                 weekday: 'long', 
                 year: 'numeric', 
                 month: 'long', 

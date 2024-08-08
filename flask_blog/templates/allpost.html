@@ -13,12 +13,12 @@
       <div class="card-body">
         <h4 class="card-title"><a class="title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h4>
         
-        <!-- Используем data-атрибут для хранения UTC времени -->
-        <small>Опубликовано <span class="post-time" data-utc-time="{{ post_with_likes.date_posted_utc }}"></span></small>
+        <!-- Using data attribute to store UTC time -->
+        <small>Posted on <span class="post-time" data-utc-time="{{ post_with_likes.date_posted_utc }}"></span></small>
         <br><br>
         
         {% if post.image_file and post.image_file != 'default.png' %}
-          <img src="{{ url_for('static', filename='post_pics/' + post.image_file) }}" alt="Изображение поста" class="post-image">
+          <img src="{{ url_for('static', filename='post_pics/' + post.image_file) }}" alt="Post image" class="post-image">
         {% endif %}
         
         <p class="card-text">{{ post.content }}</p>
@@ -58,20 +58,20 @@
     {% endif %}
   {% endfor %}
 
-  <!-- Добавляем JavaScript для преобразования времени -->
+  <!-- Adding JavaScript to convert time -->
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const timeElements = document.querySelectorAll('.post-time');
       
       timeElements.forEach(function (element) {
           const utcTime = element.getAttribute('data-utc-time');
-          console.log("UTC время, полученное из элемента:", utcTime); // Вывод времени в консоль
+          console.log("UTC time retrieved from element:", utcTime); // Log time in console
           const localTime = new Date(utcTime);
           
-          console.log("Преобразованное локальное время:", localTime.toLocaleString()); // Вывод преобразованного времени
+          console.log("Converted local time:", localTime.toLocaleString()); // Log converted time
           
-          // Форматируем время в нужном виде
-          element.textContent = localTime.toLocaleString('ru-RU', {
+          // Format the time in the desired format
+          element.textContent = localTime.toLocaleString('en-US', {
               weekday: 'long', 
               year: 'numeric', 
               month: 'long', 

@@ -15,20 +15,18 @@ class RegistrationForm(FlaskForm):
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
         if user:
-            raise ValidationError('This username is already taken. Please, choose another one')
+            raise ValidationError('This username is already taken. Please, choose another one.')
         
     def validate_email(self, email):
-        eamil = User.query.filter_by(email=email.data).first()
-        if eamil:
-            raise ValidationError('This email is already taken. Please, choose another one')
+        email = User.query.filter_by(email=email.data).first()  # Исправил ошибку в переменной 'eamil' на 'email'
+        if email:
+            raise ValidationError('This email is already taken. Please, choose another one.')
 
 class LoginForm(FlaskForm):
     email = StringField('Email:', validators=[DataRequired(), Email()])
     password = PasswordField('Password:', validators=[DataRequired()])
     remember = BooleanField('Remember password:')
     submit = SubmitField("Log in")
-
-
 
 class UpdateAccountForm(FlaskForm):
     username = StringField('Username:', validators=[DataRequired(), Length(min=2, max=20)])
@@ -40,33 +38,28 @@ class UpdateAccountForm(FlaskForm):
         if username.data != current_user.username:
             user = User.query.filter_by(username=username.data).first()
             if user:
-                raise ValidationError('This username is already taken. Please, choose another one')
+                raise ValidationError('This username is already taken. Please, choose another one.')
             
     def validate_email(self, email):
         if email.data != current_user.email:
-            user = User.query.filter_by(email=email.data).first()  # Изменил переменную на user
+            user = User.query.filter_by(email=email.data).first()
             if user:
-                raise ValidationError('This email is already taken. Please, choose another one')
-            
+                raise ValidationError('This email is already taken. Please, choose another one.')
 
 class RequestResetForm(FlaskForm):
     email = StringField('Email:', validators=[DataRequired(), Email()])
-    submit = SubmitField('Change password')
+    submit = SubmitField('Reset password')
 
-    
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
         if user is None:
-            raise ValidationError('Аккаунт с данным email-адресом отсутствует. Вы можеет его зарегестрировать')
-        
+            raise ValidationError('There is no account with that email. You may register one.')
 
 class ResetPasswordForm(FlaskForm):
-    password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
-    confirm_password = PasswordField('Confirm password', validators=[EqualTo('password')])
+    password = PasswordField('Password:', validators=[DataRequired(), Length(min=8)])
+    confirm_password = PasswordField('Confirm password:', validators=[EqualTo('password')])
     submit = SubmitField('Change password')
 
-
-
 class ResendConfirmationForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    submit = SubmitField('Отправить повторное подтверждение')
+    email = StringField('Email:', validators=[DataRequired(), Email()])
+    submit = SubmitField('Resend confirmation')

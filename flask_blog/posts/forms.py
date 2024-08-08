@@ -8,14 +8,13 @@ class PostForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     content = TextAreaField('Content', validators=[DataRequired()])
     submit = SubmitField('Post')
-    picture = FileField('Приложите фото к посту', validators=[FileAllowed(['jpg', 'png'])])
-
+    picture = FileField('Attach a photo to the post', validators=[FileAllowed(['jpg', 'png'])])
 
 
 class CommentForm(FlaskForm):
-    comment = StringField('Комментарий', validators=[DataRequired()])
+    comment = StringField('Comment', validators=[DataRequired()])
 
 
 class LikeForm(FlaskForm):
-    submit = SubmitField('Нравится')
-    dislike = SubmitField('Не нравится')
+    submit = SubmitField('Like')
+    dislike = SubmitField('Dislike')

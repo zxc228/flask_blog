@@ -4,19 +4,16 @@ from PIL import Image
 from flask import url_for, current_app
 from flask_mail import Message
 from flask_blog import mail
-from functools import wraps
-from flask import abort, redirect, flash
-from flask_login import current_user
 
 def save_profile_picture(form_picture, username):
     random_hex = token_hex(8)
     _, f_ext = os.path.splitext(form_picture.filename)
     
-    # Генерируем имя файла на основе имени пользователя и случайного хеша
+    # Generate a filename based on the username and random hex
     picture_fn = f"{username}_{random_hex}{f_ext}"
     picture_path = os.path.join(current_app.root_path, 'static/profile_pics', picture_fn)
 
-    # Изменение размера изображения для профиля
+    # Resize the profile image
     output_size = (150, 150)
     i = Image.open(form_picture)
     i.thumbnail(output_size)
@@ -31,13 +28,13 @@ def save_post_picture(form_picture, post_id):
     picture_fn = f"{post_id}_{random_hex}{f_ext}"
     picture_path = os.path.join(current_app.root_path, 'static/post_pics', picture_fn)
 
-    # Генерация уникального имени файла, если файл с таким именем уже существует
+    # Generate a unique filename if a file with that name already exists
     while os.path.exists(picture_path):
         random_hex = token_hex(8)
         picture_fn = f"{post_id}_{random_hex}{f_ext}"
         picture_path = os.path.join(current_app.root_path, 'static/post_pics', picture_fn)
 
-    output_size = (300, 300)  # Пример изменения размера изображения
+    output_size = (300, 300)  # Example of resizing the image
     i = Image.open(form_picture)
     i.thumbnail(output_size)
     i.save(picture_path)
@@ -47,23 +44,17 @@ def save_post_picture(form_picture, post_id):
 
 def send_reset_email(user):
     token = user.get_reset_token()
-    msg = Message('Запрос на сброс пароля', sender='gossiputad@gmail.com', recipients=[user.email])
-    msg.body = f'''Чтобы сбросить пароль перейдите по следующей ссылке: {url_for('users.reset_token', token=token, _external=True)}.
+    msg = Message('Password Reset Request', sender='gossiputad@gmail.com', recipients=[user.email])
+    msg.body = f'''To reset your password, visit the following link: {url_for('users.reset_token', token=token, _external=True)}.
     
-Если вы не делали этот запрос, просто проигнорируйте это сообщение.'''
+If you did not make this request, simply ignore this email.'''
     mail.send(msg)
-
 
 
 def send_confirmation_email(user):
     token = user.get_email_confirmation_token()
-    msg = Message('Подтверждение электронной почты', sender='gossiputad@gmail.com', recipients=[user.email])
-    msg.body = f'''Чтобы подтвердить вашу электронную почту, перейдите по следующей ссылке: {url_for('users.confirm_email', token=token, _external=True)}.
+    msg = Message('Email Confirmation', sender='gossiputad@gmail.com', recipients=[user.email])
+    msg.body = f'''To confirm your email, visit the following link: {url_for('users.confirm_email', token=token, _external=True)}.
     
-Если вы не делали этот запрос, просто проигнорируйте это сообщение.'''
+If you did not make this request, simply ignore this email.'''
     mail.send(msg)
-
-
-
-
-

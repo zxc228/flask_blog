@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="container">
-        <h1 class="mb-4">Повторная отправка подтверждения</h1>
+        <h1 class="mb-4">Resend Confirmation</h1>
         <form method="POST" action="{{ url_for('users.resend_confirmation') }}">
             {{ form.hidden_tag() }}
             <div class="form-group">
