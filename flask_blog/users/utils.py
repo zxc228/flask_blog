@@ -1,12 +1,12 @@
 import os 
-
 from secrets import token_hex
 from PIL import Image
-
 from flask import url_for, current_app
 from flask_mail import Message
 from flask_blog import mail
-
+from functools import wraps
+from flask import abort, redirect, flash
+from flask_login import current_user
 
 def save_profile_picture(form_picture, username):
     random_hex = token_hex(8)
@@ -52,3 +52,18 @@ def send_reset_email(user):
     
 Если вы не делали этот запрос, просто проигнорируйте это сообщение.'''
     mail.send(msg)
+
+
+
+def send_confirmation_email(user):
+    token = user.get_email_confirmation_token()
+    msg = Message('Подтверждение электронной почты', sender='gossiputad@gmail.com', recipients=[user.email])
+    msg.body = f'''Чтобы подтвердить вашу электронную почту, перейдите по следующей ссылке: {url_for('users.confirm_email', token=token, _external=True)}.
+    
+Если вы не делали этот запрос, просто проигнорируйте это сообщение.'''
+    mail.send(msg)
+
+
+
+
+

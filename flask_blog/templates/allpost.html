@@ -5,7 +5,6 @@
   {% set post = post_with_likes.post %}
   <div class="container" style="display: flex;">
     <article class="media" style="display: flex; flex-direction: column;">
-      <!-- Отображение аватара автора поста -->
       <img class="rounded-circle article-img" style="margin-right: 5px;" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
       <a href="{{ url_for('users.user_posts', username=post.author.username) }}" id="author" style="margin: 0 auto;">{{ post.author.username }}</a>
     </article>
@@ -13,18 +12,17 @@
     <div class="card" style="margin-bottom: 20px;">
       <div class="card-body">
         <h4 class="card-title"><a class="title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h4>
-        <small>Опубликовано {{ post.date_posted.strftime('%A, %d %B %Y %I:%M %p') }}</small>
+        
+        <!-- Используем data-атрибут для хранения UTC времени -->
+        <small>Опубликовано <span class="post-time" data-utc-time="{{ post_with_likes.date_posted_utc }}"></span></small>
         <br><br>
         
-        <!-- Отображение изображения поста, если оно существует -->
         {% if post.image_file and post.image_file != 'default.png' %}
           <img src="{{ url_for('static', filename='post_pics/' + post.image_file) }}" alt="Изображение поста" class="post-image">
-        
         {% endif %}
         
         <p class="card-text">{{ post.content }}</p>
 
-        <!-- Отображение кнопок лайков и дизлайков -->
         <div class="like-dislike-btns">
           <form method="post" action="{{ url_for('posts.allpost', page=page) }}">
             {{ like_form.hidden_tag() }}
@@ -48,7 +46,6 @@
   </div>
   {% endfor %}
 
-  <!-- Пагинация -->
   {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
     {% if page_num %}
       {% if pagination.page == page_num %}
@@ -60,4 +57,30 @@
       ...
     {% endif %}
   {% endfor %}
+
+  <!-- Добавляем JavaScript для преобразования времени -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const timeElements = document.querySelectorAll('.post-time');
+      
+      timeElements.forEach(function (element) {
+          const utcTime = element.getAttribute('data-utc-time');
+          console.log("UTC время, полученное из элемента:", utcTime); // Вывод времени в консоль
+          const localTime = new Date(utcTime);
+          
+          console.log("Преобразованное локальное время:", localTime.toLocaleString()); // Вывод преобразованного времени
+          
+          // Форматируем время в нужном виде
+          element.textContent = localTime.toLocaleString('ru-RU', {
+              weekday: 'long', 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric',
+              hour: '2-digit', 
+              minute: '2-digit'
+          });
+      });
+    });
+  </script>
+  
 {% endblock content %}

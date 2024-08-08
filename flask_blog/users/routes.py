@@ -4,8 +4,8 @@ from flask_blog import db, bcrypt
 from flask_blog.models import User, Post, Like
 from flask_blog.users.forms import RegistrationForm, LoginForm, \
     UpdateAccountForm, \
-    RequestResetForm, ResetPasswordForm
-from flask_blog.users.utils import save_profile_picture, send_reset_email
+    RequestResetForm, ResetPasswordForm , ResendConfirmationForm
+from flask_blog.users.utils import save_profile_picture, send_reset_email, send_confirmation_email
 from flask_blog.posts.forms import LikeForm
 
 users = Blueprint('users', __name__)
@@ -17,36 +17,38 @@ def register():
         return redirect(url_for('main.home'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(
-            form.password.data).decode('utf-8')
-        user = User(username=form.username.data,
-                    email=form.email.data, password=hashed_password)
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user = User(username=form.username.data, email=form.email.data, password=hashed_password)
         db.session.add(user)
         db.session.commit()
-        flash('Ваша учетная запись была создана!'
-              ' Теперь вы можете войти в систему', 'success')
+        
+        # Отправка письма с подтверждением почты
+        send_confirmation_email(user)
+        
+        flash('Ваша учетная запись была создана! Пожалуйста, подтвердите вашу электронную почту.', 'info')
         return redirect(url_for('main.home'))
     return render_template('register.html', title='Register', form=form)
+
 
 
 @users.route("/login", methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('posts.allpost'))
-
+        return redirect(url_for('main.home'))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-        if user and bcrypt.check_password_hash(user.password,
-                                               form.password.data):
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            if not user.email_confirmed:
+                flash('Ваша электронная почта не подтверждена. Пожалуйста, подтвердите её перед входом.', 'warning')
+                return redirect(url_for('users.login'))
             login_user(user, remember=form.remember.data)
-
             next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('posts.allpost'))
+            return redirect(next_page) if next_page else redirect(url_for('main.home'))
         else:
-            flash('Войти не удалось. Пожалуйста, '
-                  'проверьте электронную почту и пароль', 'warning')
-    return render_template('login.html', title='Аутентификация', form=form)
+            flash('Вход не выполнен. Проверьте email и пароль.', 'danger')
+    return render_template('login.html', title='Login', form=form)
+
 
 
 @users.route("/account", methods=['GET', 'POST'])
@@ -136,7 +138,8 @@ def user_posts(username):
         posts_with_likes.append({
             'post': post,
             'likes_count': likes_count,
-            'dislikes_count': dislikes_count
+            'dislikes_count': dislikes_count,
+             'date_posted_utc': post.date_posted.isoformat() + "Z"
         })
 
     return render_template('user_posts.html', posts=posts_with_likes, user=user, pagination=posts, like_form=like_form)
@@ -171,3 +174,41 @@ def reset_token(token):
         flash('Ваш пароль был обновлен!. Теперь вы можете авторизоваться.', 'success')
         return redirect(url_for('users.login'))
     return render_template('reset_token.html', form=form)
+
+
+
+@users.route('/confirm_email/<token>', methods=['GET'])
+def confirm_email(token):
+    user = User.verify_email_confirmation_token(token)
+    if user is None:
+        flash('Это недействительный или просроченный токен', 'warning')
+        return redirect(url_for('users.register'))
+
+    if user.email_confirmed:
+        flash('Эта почта уже подтверждена.', 'success')
+    else:
+        user.email_confirmed = True
+        db.session.commit()
+        flash('Ваша почта была успешно подтверждена!', 'success')
+
+    return redirect(url_for('users.login'))
+
+
+
+
+
+@users.route("/resend_confirmation", methods=['GET', 'POST'])
+def resend_confirmation():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.home'))
+
+    form = ResendConfirmationForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user and not user.email_confirmed:
+            send_confirmation_email(user)
+            flash('Новый токен подтверждения был отправлен на вашу почту.', 'info')
+        else:
+            flash('Пользователь с таким email не найден или уже подтвержден.', 'danger')
+        return redirect(url_for('users.login'))
+    return render_template('resend_confirmation.html', title='Повторная отправка подтверждения', form=form)

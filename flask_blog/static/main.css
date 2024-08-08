@@ -1,13 +1,20 @@
 /* Универсальные стили для изображений в постах */
 img.post-image {
-  width: auto;           /* Устанавливаем ширину автоматически */
-  max-width: 100%;       /* Ограничиваем максимальную ширину изображения */
-  max-height: 400px;     /* Ограничиваем максимальную высоту изображения */
-  height: auto;          /* Автоматически рассчитываем высоту, сохраняя пропорции */
-  display: block;        /* Блоковое отображение */
-  margin: 0 auto;        /* Центрируем изображение */
-  border-radius: 10px;   /* Скругленные углы */
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* Тень */
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+  max-height: 400px;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+
+.centered-image {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Остальные стили остаются без изменений */
@@ -105,6 +112,7 @@ a.article-title:hover {
 
 .card-body {
   padding: 15px;
+  
 }
 
 a {
@@ -249,10 +257,59 @@ body {
   margin-top: 10px;
   padding: 10px;
   border-radius: 5px;
-  background-color: rgba(72, 180, 97, 0.9); /* Полупрозрачный зеленый фон */
-  color: white;
   font-weight: bold;
   text-align: center;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* Тень для большей читаемости */
   z-index: 1000; /* Чтобы flash-сообщение отображалось поверх всего */
+}
+
+.flash-message.success {
+  background-color: rgba(72, 180, 97, 0.9); /* Зеленый фон для успеха */
+  color: white; /* Белый текст для успеха */
+}
+
+.flash-message.danger {
+  background-color: rgba(220, 53, 69, 0.9); /* Красный фон для ошибок */
+  color: white; /* Белый текст для ошибок */
+}
+
+.flash-message.warning {
+  background-color: rgba(255, 193, 7, 0.9); /* Желтый фон для предупреждений */
+  color: black; /* Черный текст для предупреждений */
+}
+
+.flash-message.info {
+  background-color: rgba(23, 162, 184, 0.9); /* Голубой фон для информации */
+  color: white; /* Белый текст для информации */
+}
+
+
+.comment {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.comment-img {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.comment-content {
+  flex: 1;
+}
+
+.comment-content strong {
+  font-size: 1rem;
+  margin-right: 5px;
+}
+
+.comment-content small {
+  color: gray;
+}
+
+.comment-content p {
+  margin: 0;
+  padding-top: 5px;
 }

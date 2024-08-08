@@ -19,10 +19,13 @@ def allpost():
     for post in posts_pagination.items:
         likes_count = Like.query.filter_by(post_id=post.id, value=True).count()
         dislikes_count = Like.query.filter_by(post_id=post.id, value=False).count()
+        print(f"Сохраненное время в UTC: {post.date_posted.isoformat()}")
+
         posts_with_likes.append({
             'post': post,
             'likes_count': likes_count,
-            'dislikes_count': dislikes_count
+            'dislikes_count': dislikes_count,
+            'date_posted_utc': post.date_posted.isoformat() + "Z"
         })
 
     like_form = LikeForm()
@@ -158,7 +161,8 @@ def post(post_id):
 
         return redirect(url_for('posts.post', post_id=post_id))
 
-    return render_template('post.html', title=post.title, post=post, form=form, like_form=like_form, likes_count=likes_count, dislikes_count=dislikes_count)
+    return render_template('post.html', title=post.title, post=post, form=form, like_form=like_form, likes_count=likes_count, dislikes_count=dislikes_count, date_posted_utc=post.date_posted.isoformat() + "Z")
+
 
 
 
