@@ -9,3 +9,5 @@ flask_blog/config.py
 flask_blog/.env
 migrations/
 __pycache__/
+flask_blog/admin/__pycache__/
+admin.py

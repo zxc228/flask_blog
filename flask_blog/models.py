@@ -13,25 +13,14 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    image_file = db.Column(db.String(120), unique=True, default='default.png')
+    image_file = db.Column(db.String(120), default='default.png')
     password = db.Column(db.String(60), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)
+    is_admin = db.Column(db.Boolean, nullable=False, default=False)
 
     def __repr__(self):
         return f'User( {self.username}) {self.email} {self.image_file}'
 
-    # def get_reset_token(self, expires_sec=1800):
-    #     s = Serializer(current_app.config['SECRET_KEY'], salt='password-reset-salt')
-    #     return s.dumps({'user_id': self.id})
-
-    # @staticmethod
-    # def verify_reset_token(token, expires_sec=1800):
-    #     s = Serializer(current_app.config['SECRET_KEY'], salt='password-reset-salt')
-    #     try:
-    #         user_id = s.loads(token, max_age=expires_sec)['user_id']
-    #     except Exception:
-    #         return None
-    #     return User.query.get(user_id)
 
     def get_reset_token(self, expires_sec=1800):
         payload = {
@@ -88,6 +77,6 @@ class Comment(db.Model):
 class Like(db.Model):
     __tablename__ = 'likes'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.String(36), db.ForeignKey('user.id'), nullable=False)
-    post_id = db.Column(db.String(36), db.ForeignKey('post.id'), nullable=False)
+    user_id = db.Column(db.String(36), db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    post_id = db.Column(db.String(36), db.ForeignKey('post.id', ondelete='CASCADE'), nullable=False)
     value = db.Column(db.Boolean, nullable=False)  # True для лайка, False для дизлайка

@@ -1,54 +1,16 @@
 {% extends "layout.html" %}
 
-{% block head %}
-  <style>
-    .container{
-      margin-bottom: 0.8rem;
-    }
-
-    .card{
-      border-radius: 25px;
-      /* border-top-right-radius: 25px;
-      border-bottom-left-radius: 25px; */
-      background-color:  white; 
-      box-shadow: 10px 15px 10px #4a4e69;
-      width: 92%;
-    }
-    
-    .card-title{
-      margin-bottom: 0 !important;
-      font-family: 'Bebas Neue', cursive;
-    }
-
-    a{
-      color: #003049 !important;
-      text-decoration: none;
-    }
-
-    small{
-      color: lightslategray;
-    }
-
-    p{
-      color: rgb(43, 37, 37);
-    }
-
-    /* i{
-      padding: 0px 7px;
-      cursor: pointer;
-    } */
-  </style>
-{% endblock head %}
-
 {% block content %}
-    <h1 class="mb-3">Посты опубликованы пользователем {{ user.username }} ({{ posts.total }})</h1>
-    {% for post in posts.items %}
+    <h1 class="mb-3">Посты опубликованы пользователем {{ user.username }} ({{ pagination.total }})</h1>
+    {% for post_with_likes in posts %}
+    {% set post = post_with_likes.post %}
     <div class="container" style="display: flex;">
-      <article class="media" style="display: flex; flex-direction: column;"> 
+      <article class="media" style="display: flex; flex-direction: column;">
+        <!-- Отображение аватара автора поста -->
         <img class="rounded-circle article-img" style="margin-right: 5px;" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
         <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}" style="margin: 0 auto">{{ post.author.username }}</a>
       </article>
-      
+
       <div class="card" style="margin-bottom: 20px;">
         <div class="card-body">
           <h4 class="card-title"><a class="title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h4>
@@ -57,19 +19,40 @@
           <br>
           <br>
           <p class="card-text">{{ post.content }}</p>
+
+          <!-- Отображение изображения поста -->
+          {% if post.image_file and post.image_file != 'default.png' %}
+            <img src="{{ url_for('static', filename='post_pics/' + post.image_file) }}" alt="Изображение поста" class="post-image">
+          {% endif %}
+
+          <!-- Кнопки лайка и дизлайка -->
+          <div class="like-dislike-btns">
+            <form method="post" action="{{ url_for('users.user_posts', username=user.username, page=pagination.page) }}" style="display:inline-block;">
+              {{ like_form.hidden_tag() }}
+              <input type="hidden" name="post_id" value="{{ post.id }}">
+              
+              <!-- Кнопка лайка -->
+              <button name="like" type="submit">
+                <img src="{{ url_for('static', filename='images/like.svg') }}" alt="Like">
+                <span class="like-count">{{ post_with_likes.likes_count }}</span>
+              </button>
+
+              <!-- Кнопка дизлайка -->
+              <button name="dislike" type="submit">
+                <img src="{{ url_for('static', filename='images/dislike.svg') }}" alt="Dislike">
+                <span class="dislike-count">{{ post_with_likes.dislikes_count }}</span>
+              </button>
+            </form>
+          </div>
         </div>
-        <!-- <div class="card-footer" style="font-size: 20px;">
-          <i class="fa fa-heart-o"></i>
-          <i class="fa fa-bookmark-o"></i>
-        </div> -->
       </div>
     </div>
     {% endfor %}
 
-    
-    {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+    <!-- Пагинация -->
+    {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
       {% if page_num %}
-        {% if posts.page == page_num %}
+        {% if pagination.page == page_num %}
           <a class="btn btn-success mb-4" href="{{ url_for('users.user_posts', username=user.username, page=page_num) }}">{{ page_num }}</a>
         {% else %}
           <a class="btn btn-outline-success mb-4" href="{{ url_for('users.user_posts', username=user.username, page=page_num) }}">{{ page_num }}</a>

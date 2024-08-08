@@ -1,96 +1,51 @@
 {% extends "layout.html" %}
 
-{% block head %}
-  <style>
-    .container{
-      margin-bottom: 0.8rem;
-    }
-
-    .card{
-      border-radius: 25px;
-      background-color: white; 
-      box-shadow: 10px 15px 10px #4a4e69;
-      width: 92%;
-    }
-    
-    .card-title{
-      margin-bottom: 0 !important;
-      font-family: 'Bebas Neue', cursive;
-    }
-
-    a{
-      color: #003049 !important;
-      text-decoration: none;
-    }
-
-    small{
-      color: lightslategray;
-    }
-
-    p{
-      color: rgb(43, 37, 37);
-    }
-
-    .like-dislike-btns {
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-    }
-
-    .like-dislike-btns button {
-      border: none;
-      background-color: transparent;
-      font-size: 24px;
-      margin-right: 10px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-    }
-
-    .like-dislike-btns button img {
-      margin-right: 5px;
-      width: 32px;
-    }
-
-    .like-dislike-btns button:hover {
-      color: #007bff; /* Цвет при наведении */
-    }
-
-    .like-dislike-btns .like-count,
-    .like-dislike-btns .dislike-count {
-      font-size: 18px;
-      margin-left: 5px;
-    }
-  </style>
-{% endblock head %}
-
 {% block content %}
 <div class="container" style="display: flex;">
-  <article class="media" style="display: flex; flex-direction: column;"> 
+  <article class="media" style="display: flex; flex-direction: column;">
+    <!-- Отображение аватара автора поста -->
     <img class="rounded-circle article-img" style="margin-right: 5px;" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
     <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}" style="margin: 0 auto">{{ post.author.username }}</a>
   </article>
-  
-  <div class="card" style="margin-bottom: 20px;">
+
+  <div class="card">
     <div class="card-body">
       <h4 class="card-title">{{ post.title }}</h4>
       <small>Опубликовано {{ post.date_posted.strftime('%A, %d %B %Y %I:%M %p') }}</small>
-      <br>
-      <br>
+      <br><br>
 
-      {% if post.image_file %}
+      {% if post.image_file and post.image_file != 'default.png' %}
+        <!-- Отображение изображения поста -->
         <div class="form-group">
-          <img style="margin-right: 5px;" src="{{ url_for('static', filename='profile_pics/' + post.image_file) }}">
+          <img class="post-image" style="margin-right: 5px;" src="{{ url_for('static', filename='post_pics/' + post.image_file) }}">
         </div>
       {% endif %}
 
       <p class="card-text">{{ post.content }}</p>
 
+      <!-- Комментарии -->
+      <div>
+        <h5>Комментарии:</h5>
+        {% for comment in post.comments %}
+          <p>{{ comment.body }} - <small>{{ comment.timestamp }}</small></p>
+        {% endfor %}
+      </div>
+
+      <!-- Форма для добавления комментария -->
+      <form action="{{ url_for('posts.post', post_id=post.id) }}" method="post">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+          {{ form.comment.label }}
+          {{ form.comment(class="form-control") }}
+        </div>
+        <button type="submit" class="btn btn-primary" name="submit">Добавить комментарий</button>
+      </form>
+
       <!-- Кнопки лайка и дизлайка -->
       <div class="like-dislike-btns">
         <form action="{{ url_for('posts.post', post_id=post.id) }}" method="post" style="display:inline-block;">
           {{ like_form.hidden_tag() }}
-          
+
           <!-- Кнопка лайка -->
           <button name="like" type="submit">
             <img src="{{ url_for('static', filename='images/like.svg') }}" alt="Like">
@@ -116,8 +71,8 @@
     </div>
   </div>
 </div>
-  
-<!-- Modal -->
+
+<!-- Модальное окно для подтверждения удаления -->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">

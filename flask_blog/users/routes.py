@@ -1,11 +1,12 @@
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_blog import db, bcrypt
-from flask_blog.models import User, Post
+from flask_blog.models import User, Post, Like
 from flask_blog.users.forms import RegistrationForm, LoginForm, \
     UpdateAccountForm, \
     RequestResetForm, ResetPasswordForm
-from flask_blog.users.utils import save_picture, send_reset_email
+from flask_blog.users.utils import save_profile_picture, send_reset_email
+from flask_blog.posts.forms import LikeForm
 
 users = Blueprint('users', __name__)
 
@@ -54,7 +55,7 @@ def account():
     form = UpdateAccountForm()
     if form.validate_on_submit():
         if form.picture.data:
-            picture_file = save_picture(form.picture.data)
+            picture_file = save_profile_picture(form.picture.data, current_user.username)
             current_user.image_file = picture_file
         current_user.username = form.username.data
         current_user.email = form.email.data
@@ -82,12 +83,64 @@ def logout():
     return redirect(url_for('main.home'))
 
 
-@users.route('/user/<string:username>')
+
+@users.route('/user/<string:username>', methods=['GET', 'POST'])
 def user_posts(username):
     page = request.args.get('page', 1, type=int)
     user = User.query.filter_by(username=username).first_or_404()
     posts = Post.query.filter_by(author=user).order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
-    return render_template('user_posts.html', posts=posts, user = user)
+
+    # Создаем форму для лайков
+    like_form = LikeForm()
+
+    if like_form.validate_on_submit():
+        post_id = request.form.get('post_id')
+        post = Post.query.get_or_404(post_id)
+
+        # Проверяем, существует ли уже лайк или дизлайк от текущего пользователя
+        existing_like = Like.query.filter_by(user_id=current_user.id, post_id=post_id).first()
+
+        if 'like' in request.form:
+            if existing_like:
+                if existing_like.value:
+                    # Удалить лайк
+                    db.session.delete(existing_like)
+                else:
+                    # Изменить дизлайк на лайк
+                    existing_like.value = True
+            else:
+                # Добавить новый лайк
+                new_like = Like(user_id=current_user.id, post_id=post_id, value=True)
+                db.session.add(new_like)
+        elif 'dislike' in request.form:
+            if existing_like:
+                if not existing_like.value:
+                    # Удалить дизлайк
+                    db.session.delete(existing_like)
+                else:
+                    # Изменить лайк на дизлайк
+                    existing_like.value = False
+            else:
+                # Добавить новый дизлайк
+                new_dislike = Like(user_id=current_user.id, post_id=post_id, value=False)
+                db.session.add(new_dislike)
+
+        db.session.commit()
+        return redirect(url_for('users.user_posts', username=username, page=page))
+
+    # Подготавливаем посты с лайками и дизлайками
+    posts_with_likes = []
+    for post in posts.items:
+        likes_count = Like.query.filter_by(post_id=post.id, value=True).count()
+        dislikes_count = Like.query.filter_by(post_id=post.id, value=False).count()
+        posts_with_likes.append({
+            'post': post,
+            'likes_count': likes_count,
+            'dislikes_count': dislikes_count
+        })
+
+    return render_template('user_posts.html', posts=posts_with_likes, user=user, pagination=posts, like_form=like_form)
+
 
 
 @users.route("/reset_password", methods=['GET', 'POST'])

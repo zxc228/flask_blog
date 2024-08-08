@@ -1,9 +1,10 @@
-from flask import render_template, url_for, flash, redirect, request, abort, Blueprint
+from flask import render_template, url_for, flash, redirect, request, abort, Blueprint, current_app
 from flask_login import current_user, login_required
 from flask_blog import db
 from flask_blog.models import Post, Comment, Like
 from flask_blog.posts.forms import PostForm, CommentForm, LikeForm
-from flask_blog.users.utils import save_picture
+from flask_blog.users.utils import save_post_picture
+import os
 
 posts = Blueprint('posts', __name__)
 
@@ -77,16 +78,25 @@ def allpost():
 @login_required
 def new_post():
     form = PostForm()
-    picture_name = None
     if form.validate_on_submit():
+        image_file = None
         if form.picture.data:
-            picture_name = save_picture(form.picture.data)
-        post =Post(title=form.title.data, content=form.content.data, author=current_user, image_file=picture_name)
+            image_file = save_post_picture(form.picture.data, 0)  # 0 временно используется до получения реального ID поста
+        post = Post(title=form.title.data, content=form.content.data, author=current_user, image_file=image_file or 'default.png')
         db.session.add(post)
+        db.session.flush()  # Промежуточно сохраняем, чтобы получить ID поста
+
+        if image_file:
+            # Обновляем имя файла с реальным ID поста после flush
+            image_file = save_post_picture(form.picture.data, post.id)
+            post.image_file = image_file
+        
         db.session.commit()
         flash("Ваш пост создан!", 'success')
         return redirect(url_for('posts.allpost'))
-    return render_template('create_post.html', title='New post', form=form, image_file=picture_name, legend='New post')
+    return render_template('create_post.html', title='New post', form=form, legend='New post')
+
+
 
 
 @posts.route("/post/<int:post_id>", methods=['GET', 'POST'])
@@ -163,19 +173,27 @@ def update_post(post_id):
         post.title = form.title.data
         post.content = form.content.data
         if form.picture.data:
-            picture_file = save_picture(form.picture.data)
+            # Удаляем старое изображение, если оно существует
+            if post.image_file:
+                old_picture_path = os.path.join(current_app.root_path, 'static/post_pics', post.image_file)
+                if os.path.exists(old_picture_path):
+                    os.remove(old_picture_path)
+            
+            # Сохраняем новое изображение
+            picture_file = save_post_picture(form.picture.data, post.id)
             post.image_file = picture_file
+
         db.session.commit()
         flash('Ваш пост был обновлен', 'success')
-        return redirect(url_for('posts.post', post_id = post.id))
+        return redirect(url_for('posts.post', post_id=post.id))
     
     elif request.method == 'GET':
         form.title.data = post.title
         form.content.data = post.content
-
-        image_file = url_for('static', filename='posts_pics/'+post.image_file)
+        image_file = url_for('static', filename='post_pics/' + post.image_file) if post.image_file else None
 
     return render_template('create_post.html', title='Update post', image_file=image_file, form=form, legend='Update post')
+
 
 
 @posts.route("/post/<int:post_id>/delete", methods=['POST'])

@@ -1,3 +1,16 @@
+/* Универсальные стили для изображений в постах */
+img.post-image {
+  width: auto;           /* Устанавливаем ширину автоматически */
+  max-width: 100%;       /* Ограничиваем максимальную ширину изображения */
+  max-height: 400px;     /* Ограничиваем максимальную высоту изображения */
+  height: auto;          /* Автоматически рассчитываем высоту, сохраняя пропорции */
+  display: block;        /* Блоковое отображение */
+  margin: 0 auto;        /* Центрируем изображение */
+  border-radius: 10px;   /* Скругленные углы */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* Тень */
+}
+
+/* Остальные стили остаются без изменений */
 body {
   margin: 0;
   padding: 0;
@@ -28,7 +41,9 @@ h1, h2, h3, h4, h5, h6 {
   padding: 10px 20px;
   border: 1px solid #dddddd;
   border-radius: 3px;
-  /* margin-bottom: 20px; */
+  box-shadow: 10px 20px 8px darkslategray;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .article-title {
@@ -53,7 +68,7 @@ a.article-title:hover {
 .article-metadata {
   padding-bottom: 1px;
   margin-bottom: 4px;
-  border-bottom: 1px solid #e3e3e3
+  border-bottom: 1px solid #e3e3e3;
 }
 
 .article-metadata a:hover {
@@ -76,4 +91,168 @@ a.article-title:hover {
 
 .account-heading {
   font-size: 2.5rem;
+}
+
+/* Стили для карты */
+.card {
+  border-radius: 25px;
+  background-color: white;
+  box-shadow: 10px 15px 10px #4a4e69;
+  width: 92%;
+  max-width: 800px; /* Ограничение ширины карточки */
+  margin: 20px auto; /* Центрируем карточки */
+}
+
+.card-body {
+  padding: 15px;
+}
+
+a {
+  color: #003049;
+}
+
+small {
+  color: lightslategray;
+}
+
+p {
+  color: rgb(43, 37, 37);
+}
+
+.text-secondary {
+  color: #6c757d;
+}
+
+.card-title {
+  margin-bottom: 0 !important;
+  font-family: 'Bebas Neue', cursive;
+}
+
+/* Стили для кнопок лайка и дизлайка */
+.like-dislike-btns {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.like-dislike-btns button {
+  border: none;
+  background-color: transparent;
+  font-size: 24px;
+  margin-right: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.like-dislike-btns button img {
+  margin-right: 5px;
+  width: 24px;
+}
+
+.like-dislike-btns .like-count,
+.like-dislike-btns .dislike-count {
+  font-size: 18px;
+  margin-left: 5px;
+}
+
+/* Фон для страницы */
+#bg-page:before {
+  content: ' ';
+  display: block;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  z-index: -1; /* Убираем фон на задний план */
+  opacity: 0.5;
+  background-image: url('../static/images/bg.jpg');
+  background-size: cover;
+}
+
+/* Стили для контейнера */
+.container-relative {
+  position: relative;
+  z-index: 1; /* Выводим текст на передний план */
+  margin: 12rem 4rem;
+  text-align: center;
+}
+
+/* Стили для текста */
+.card-text {
+  text-align: justify;
+  color: rgb(43, 37, 37);
+  font-weight: 500;
+  font-size: 22px;
+}
+
+/* Стили для заголовка */
+.heading > h1 {
+  font-size: 55px;
+  font-family: 'Alice', serif;
+  color: black;
+  text-shadow: 2px 2px #a44a3f;
+}
+
+/* Стили для кнопок */
+.container-relative > button {
+  color: blue;
+  padding: 7px;
+  border: 1px solid blue;
+  border-radius: 5px;
+  transition: 0.3s ease;
+}
+
+.container-relative > button:hover {
+  color: white;
+  background-color: blue;
+}
+
+body {
+  background-color: #e5e5e5;
+  margin-top: 6.5rem;
+}
+
+.navigation-links {
+  color: white !important;
+  font-weight: 500;
+  background-color: rgb(183, 214, 252);
+  border-radius: 5px;
+  border-bottom: 4px solid blue;
+  margin: 5px;
+  background-size: 200% 200%;
+  background-image: linear-gradient(transparent 50%, rgb(79, 128, 233) 50%);
+  transition: background-position 300ms, color 300ms ease, border-color 300ms ease;
+}
+
+.navigation-links:hover {
+  color: white;
+  background-image: linear-gradient(transparent 50%, #3a86ff 50%);
+  background-position: 0% 100%;
+}
+
+.navbar {
+  background-color: #c6def1;
+  box-shadow: 0px 1px 10px black;
+}
+
+.navbar .container {
+  margin-bottom: 0;
+}
+
+/* Стили для flash-сообщений */
+.flash-message {
+  position: relative;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: rgba(72, 180, 97, 0.9); /* Полупрозрачный зеленый фон */
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* Тень для большей читаемости */
+  z-index: 1000; /* Чтобы flash-сообщение отображалось поверх всего */
 }
