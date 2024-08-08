@@ -10,29 +10,30 @@ img.post-image {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 }
 
-
 .centered-image {
   display: block;
   margin-left: auto;
   margin-right: auto;
 }
 
-/* Остальные стили остаются без изменений */
+/* Основные стили */
 body {
-  margin: 0;
-  padding: 0;
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  font-family: Arial, sans-serif;
+  margin-top: 6.5rem;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color: #444444;
+  color: #ffffff;
 }
 
 .bg-steel {
-  background-color: #5f788a;
+  background-color: #343a40;
 }
 
 .site-header .navbar-nav .nav-link {
-  color: #cbd5db;
+  color: #adb5bd;
 }
 
 .site-header .navbar-nav .nav-link:hover {
@@ -44,21 +45,21 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .content-section {
-  background: #ffffff;
+  background: #2b2b2b;
   padding: 10px 20px;
-  border: 1px solid #dddddd;
+  border: 1px solid #444444;
   border-radius: 3px;
-  box-shadow: 10px 20px 8px darkslategray;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
   max-width: 800px;
   margin: 0 auto;
 }
 
 .article-title {
-  color: #444444;
+  color: #e0e0e0;
 }
 
 a.article-title:hover {
-  color: #428bca;
+  color: #17a2b8;
   text-decoration: none;
 }
 
@@ -70,16 +71,17 @@ a.article-title:hover {
   height: 65px;
   width: 65px;
   margin-right: 16px;
+  border-radius: 50%;
 }
 
 .article-metadata {
   padding-bottom: 1px;
   margin-bottom: 4px;
-  border-bottom: 1px solid #e3e3e3;
+  border-bottom: 1px solid #444444;
 }
 
 .article-metadata a:hover {
-  color: #333;
+  color: #17a2b8;
   text-decoration: none;
 }
 
@@ -94,46 +96,49 @@ a.article-title:hover {
   width: 125px;
   margin-right: 20px;
   margin-bottom: 16px;
+  border-radius: 50%;
 }
 
 .account-heading {
   font-size: 2.5rem;
+  color: #ffffff;
 }
 
-/* Стили для карты */
+/* Стили для карточек */
 .card {
-  border-radius: 25px;
-  background-color: white;
-  box-shadow: 10px 15px 10px #4a4e69;
+  border-radius: 15px;
+  background-color: #2b2b2b;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
   width: 92%;
-  max-width: 800px; /* Ограничение ширины карточки */
-  margin: 20px auto; /* Центрируем карточки */
+  max-width: 800px;
+  margin: 20px auto;
 }
 
 .card-body {
   padding: 15px;
-  
-}
-
-a {
-  color: #003049;
-}
-
-small {
-  color: lightslategray;
-}
-
-p {
-  color: rgb(43, 37, 37);
-}
-
-.text-secondary {
-  color: #6c757d;
 }
 
 .card-title {
   margin-bottom: 0 !important;
   font-family: 'Bebas Neue', cursive;
+  color: #ffffff;
+}
+
+/* Стили для ссылок и текста */
+a {
+  color: #17a2b8;
+}
+
+small {
+  color: #adb5bd;
+}
+
+p {
+  color: #e0e0e0;
+}
+
+.text-secondary {
+  color: #adb5bd;
 }
 
 /* Стили для кнопок лайка и дизлайка */
@@ -163,9 +168,10 @@ p {
 .like-dislike-btns .dislike-count {
   font-size: 18px;
   margin-left: 5px;
+  color: #ffffff;
 }
 
-/* Фон для страницы */
+/* Стили для фона */
 #bg-page:before {
   content: ' ';
   display: block;
@@ -174,17 +180,16 @@ p {
   top: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  z-index: -1; /* Убираем фон на задний план */
+  object-fit: cover;
+  z-index: -1;
   opacity: 0.5;
   background-image: url('../static/images/bg.jpg');
   background-size: cover;
 }
 
-/* Стили для контейнера */
 .container-relative {
   position: relative;
-  z-index: 1; /* Выводим текст на передний план */
+  z-index: 1;
   margin: 12rem 4rem;
   text-align: center;
 }
@@ -192,58 +197,55 @@ p {
 /* Стили для текста */
 .card-text {
   text-align: justify;
-  color: rgb(43, 37, 37);
   font-weight: 500;
   font-size: 22px;
+  color: #e0e0e0;
 }
 
 /* Стили для заголовка */
 .heading > h1 {
   font-size: 55px;
   font-family: 'Alice', serif;
-  color: black;
-  text-shadow: 2px 2px #a44a3f;
+  color: #ffffff;
+  text-shadow: 2px 2px #343a40;
 }
 
 /* Стили для кнопок */
 .container-relative > button {
-  color: blue;
+  color: #17a2b8;
   padding: 7px;
-  border: 1px solid blue;
+  border: 1px solid #17a2b8;
   border-radius: 5px;
   transition: 0.3s ease;
 }
 
 .container-relative > button:hover {
-  color: white;
-  background-color: blue;
+  color: #ffffff;
+  background-color: #17a2b8;
 }
 
-body {
-  background-color: #e5e5e5;
-  margin-top: 6.5rem;
-}
-
+/* Стили для навигационных ссылок */
 .navigation-links {
-  color: white !important;
+  color: #ffffff !important;
   font-weight: 500;
-  background-color: rgb(183, 214, 252);
+  background-color: #343a40;
   border-radius: 5px;
-  border-bottom: 4px solid blue;
+  border-bottom: 4px solid #17a2b8;
   margin: 5px;
   background-size: 200% 200%;
-  background-image: linear-gradient(transparent 50%, rgb(79, 128, 233) 50%);
+  background-image: linear-gradient(transparent 50%, #17a2b8 50%);
   transition: background-position 300ms, color 300ms ease, border-color 300ms ease;
 }
 
 .navigation-links:hover {
-  color: white;
-  background-image: linear-gradient(transparent 50%, #3a86ff 50%);
+  color: #ffffff;
+  background-image: linear-gradient(transparent 50%, #17a2b8 50%);
   background-position: 0% 100%;
 }
 
+/* Стили для навигационной панели */
 .navbar {
-  background-color: #c6def1;
+  background-color: #2b2b2b;
   box-shadow: 0px 1px 10px black;
 }
 
@@ -259,31 +261,31 @@ body {
   border-radius: 5px;
   font-weight: bold;
   text-align: center;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* Тень для большей читаемости */
-  z-index: 1000; /* Чтобы flash-сообщение отображалось поверх всего */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
 }
 
 .flash-message.success {
-  background-color: rgba(72, 180, 97, 0.9); /* Зеленый фон для успеха */
-  color: white; /* Белый текст для успеха */
+  background-color: rgba(72, 180, 97, 0.9);
+  color: white;
 }
 
 .flash-message.danger {
-  background-color: rgba(220, 53, 69, 0.9); /* Красный фон для ошибок */
-  color: white; /* Белый текст для ошибок */
+  background-color: rgba(220, 53, 69, 0.9);
+  color: white;
 }
 
 .flash-message.warning {
-  background-color: rgba(255, 193, 7, 0.9); /* Желтый фон для предупреждений */
-  color: black; /* Черный текст для предупреждений */
+  background-color: rgba(255, 193, 7, 0.9);
+  color: black;
 }
 
 .flash-message.info {
-  background-color: rgba(23, 162, 184, 0.9); /* Голубой фон для информации */
-  color: white; /* Белый текст для информации */
+  background-color: rgba(23, 162, 184, 0.9);
+  color: white;
 }
 
-
+/* Стили для комментариев */
 .comment {
   display: flex;
   align-items: flex-start;
@@ -294,15 +296,18 @@ body {
   width: 40px;
   height: 40px;
   margin-right: 10px;
+  border-radius: 50%;
 }
 
 .comment-content {
   flex: 1;
+  color: #e0e0e0;
 }
 
 .comment-content strong {
   font-size: 1rem;
   margin-right: 5px;
+  color: #ffffff;
 }
 
 .comment-content small {
@@ -312,4 +317,5 @@ body {
 .comment-content p {
   margin: 0;
   padding-top: 5px;
+  color: #e0e0e0;
 }

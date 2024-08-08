@@ -68,18 +68,21 @@ class Post(db.Model):
     title = db.Column(db.String(120), nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     content = db.Column(db.Text, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable= False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     comments = db.relationship('Comment', backref='title', lazy='select', cascade='all, delete-orphan')
 
     image_file = db.Column(db.String(120), unique=True, default='default.png')
 
+    
+    likes = db.relationship('Like', backref='post', lazy='dynamic', cascade='all, delete-orphan')
 
     def likes_count(self):
         return Like.query.filter_by(post_id=self.id, value=True).count()
 
     def dislikes_count(self):
         return Like.query.filter_by(post_id=self.id, value=False).count()
+
     
     def __repr__(self):
         return f"Запись {self.title}, {self.date_posted}"
