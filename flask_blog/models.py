@@ -72,7 +72,8 @@ class Post(db.Model):
 
     comments = db.relationship('Comment', backref='title', lazy='select', cascade='all, delete-orphan')
 
-    image_file = db.Column(db.String(120), unique=True, default='default.png')
+   image_file = db.Column(db.String(120), nullable=False, default='default.png')
+
 
     
     likes = db.relationship('Like', backref='post', lazy='dynamic', cascade='all, delete-orphan')
